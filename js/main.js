@@ -11,7 +11,7 @@
 (function(){
 'use strict';
 
-var BUILD = 'v1';
+var BUILD = 'v2';
 var $ = function(id){ return document.getElementById(id); };
 var bridge = (typeof window.Maikara !== 'undefined') ? window.Maikara : null;
 
