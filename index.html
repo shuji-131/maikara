@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="format-detection" content="telephone=no,address=no,email=no">
+<title>マイカラ</title>
+<meta name="description" content="自分で手入力するカラオケリスト。実物の歌本の体裁で並べる。">
+<!-- 身内で使うページ。検索の一覧に載せない -->
+<meta name="robots" content="noindex, nofollow, noarchive">
+<link rel="icon" href="icons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="icons/favicon-16.png" sizes="16x16">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon-180.png">
+
+<!-- ホーム画面に入れたときの名札。★iPhone は「ホーム画面に追加」を押した
+     その瞬間にここを見に行くので、必ず <head> に置いておくこと -->
+<link rel="manifest" href="app.webmanifest">
+<meta name="theme-color" content="#16150F">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="マイカラ">
+
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header id="top">
+  <div class="top-row">
+    <h1 class="brand">マイカラ</h1>
+    <div class="spacer"></div>
+    <div class="segwrap">
+      <span class="seg-label">きせかえ</span>
+      <div class="seg" id="skinSeg">
+        <button type="button" data-skin="songbook" aria-pressed="true">歌本</button>
+        <button type="button" data-skin="neon" aria-pressed="false">ネオン</button>
+      </div>
+    </div>
+    <div class="segwrap">
+      <span class="seg-label">ひょうじ</span>
+      <div class="seg" id="modeSeg">
+        <button type="button" data-mode="simple" aria-pressed="true">シンプル</button>
+        <button type="button" data-mode="detail" aria-pressed="false">くわしい</button>
+      </div>
+    </div>
+    <div class="segwrap">
+      <span class="seg-label">がめん</span>
+      <div class="seg" id="themeSeg">
+        <button type="button" data-theme="auto" aria-pressed="true">自動</button>
+        <button type="button" data-theme="light" aria-pressed="false">明</button>
+        <button type="button" data-theme="dark" aria-pressed="false">暗</button>
+      </div>
+    </div>
+    <button type="button" class="iconbtn" id="setBtn" aria-label="控えと設定">･･･</button>
+  </div>
+
+  <div class="tools">
+    <div class="search">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+      <input id="q" type="search" placeholder="曲名・歌手名・よみで探す" autocomplete="off" aria-label="検索">
+      <button type="button" id="qclear" hidden aria-label="検索をやめる">✕</button>
+    </div>
+    <select class="sort" id="sort" aria-label="並び替え">
+      <option value="title">曲名のあいうえお順</option>
+      <option value="artist">歌手名のあいうえお順</option>
+      <option value="added">登録順（新しい順）</option>
+    </select>
+    <button type="button" class="filterbtn" id="filterBtn" aria-expanded="false" aria-controls="filters">
+      絞り込み <span class="count" id="fcount" hidden>0</span>
+    </button>
+  </div>
+
+  <div id="filters" hidden>
+    <div class="frow">
+      <span class="fname">タグ</span>
+      <div class="chips" id="tagChips"></div>
+    </div>
+    <div class="frow">
+      <span class="fname">年代</span>
+      <div class="chips" id="eraChips"></div>
+    </div>
+    <p class="fhint">タグも年代も、選んだ<b>どれかに当てはまる曲</b>を出します。選ぶほど広がります。並び替えとそのまま組み合わせられます。</p>
+  </div>
+</header>
+
+<div class="notice" id="notice" hidden>
+  <span><b id="noticeN">0</b> 曲、よみがなが入っていません。「?」の棚にまとめてあります。</span>
+  <button type="button" id="noticeBtn">その曲を見る</button>
+</div>
+
+<div class="wrap">
+  <div class="book">
+    <div class="sheetpaper">
+      <div class="runhead">
+        <b id="runLeft">曲名さくいん</b>
+        <span id="runRight">—</span>
+      </div>
+      <div class="page" id="page" data-mode="simple" data-by="title"></div>
+      <div class="runfoot">
+        <span id="footLeft">MYKARA</span>
+        <span id="footRight">0</span>
+      </div>
+    </div>
+    <nav class="tabs" id="tabs" aria-label="あかさたな"></nav>
+  </div>
+
+  <div class="addbar">
+    <button type="button" class="addbtn" id="addBtn">＋ 曲を追加</button>
+  </div>
+</div>
+
+<div class="scrim" id="scrim" hidden></div>
+
+<!-- 曲の中身 -->
+<div class="sheet" id="detail" role="dialog" aria-modal="true" aria-labelledby="dTitle" hidden>
+  <div class="grip"></div>
+  <div class="sheet-head">
+    <button type="button" class="closebtn" data-close aria-label="閉じる">✕</button>
+    <div class="ruby-big" id="dRuby"></div>
+    <h2 id="dTitle"></h2>
+    <div class="sub" id="dSub"></div>
+  </div>
+  <dl class="dl" id="dBody"></dl>
+  <div class="sheetbar">
+    <button type="button" id="dEdit">なおす</button>
+    <button type="button" class="del" id="dDel">この曲を消す</button>
+  </div>
+</div>
+
+<!-- 登録・修正 -->
+<div class="sheet" id="form" role="dialog" aria-modal="true" aria-labelledby="fTitle" hidden>
+  <div class="grip"></div>
+  <div class="sheet-head">
+    <button type="button" class="closebtn" data-close aria-label="閉じる">✕</button>
+    <h2 id="fTitle">曲を追加</h2>
+    <div class="sub">よみがなは頭3文字だけ／入れなくても登録できます</div>
+  </div>
+
+  <div class="field">
+    <label for="fSong">曲名</label>
+    <div class="pair">
+      <div class="grow"><input class="inp" id="fSong" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="例）粉雪"></div>
+      <div class="yomibox">
+        <span class="auto-badge" id="fSongAuto" hidden>自動</span>
+        <input class="inp" id="fSongYomi" type="text" maxlength="3" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="よみ3字" aria-label="曲名のよみ3文字">
+      </div>
+    </div>
+  </div>
+
+  <div class="field">
+    <label for="fArtist">歌手名</label>
+    <div class="pair">
+      <div class="grow"><input class="inp" id="fArtist" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="例）レミオロメン"></div>
+      <div class="yomibox">
+        <span class="auto-badge" id="fArtistAuto" hidden>自動</span>
+        <input class="inp" id="fArtistYomi" type="text" maxlength="3" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="よみ3字" aria-label="歌手名のよみ3文字">
+      </div>
+    </div>
+  </div>
+
+  <div class="field">
+    <span class="flabel">タグ（いくつでも）</span>
+    <div class="chips" id="fTags"></div>
+    <div class="newtag">
+      <input class="inp" id="fNewTag" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="無ければ新しく作る">
+      <button type="button" id="fAddTag">作る</button>
+    </div>
+  </div>
+
+  <div class="field">
+    <span class="flabel">発売の年代</span>
+    <div class="chips" id="fEras"></div>
+  </div>
+
+  <div class="field">
+    <label for="fHum">歌い出し・思い出す手がかり</label>
+    <textarea class="inp" id="fHum" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="サビの入り、前奏の長さ、なんでも"></textarea>
+  </div>
+
+  <div class="field">
+    <span class="flabel">キー</span>
+    <div class="stepper">
+      <button type="button" id="fKeyDown" aria-label="キーを下げる">−</button>
+      <output id="fKey" for="fKeyDown fKeyUp">±0</output>
+      <button type="button" id="fKeyUp" aria-label="キーを上げる">＋</button>
+      <em>原曲キーは ±0</em>
+    </div>
+  </div>
+
+  <div class="field">
+    <label for="fMemo">自由欄</label>
+    <textarea class="inp" id="fMemo" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="デュエット可、朝は出ない、など"></textarea>
+  </div>
+
+  <div class="savebar">
+    <button type="button" class="ghost" data-close>やめる</button>
+    <button type="button" class="primary" id="fSave">この曲を登録</button>
+  </div>
+</div>
+
+<!-- 控えと設定 -->
+<div class="sheet" id="settings" role="dialog" aria-modal="true" aria-labelledby="sTitle" hidden>
+  <div class="grip"></div>
+  <div class="sheet-head">
+    <button type="button" class="closebtn" data-close aria-label="閉じる">✕</button>
+    <h2 id="sTitle">控えと設定</h2>
+    <div class="sub" id="sCount">0曲</div>
+  </div>
+
+  <div class="setrow">
+    <h3>控えを書き出す</h3>
+    <p>いまの全部を1つのファイルにします。機種変更のときや、消えたときの戻し先になります。</p>
+    <div class="row">
+      <button type="button" id="expSave">端末に保存</button>
+      <button type="button" id="expShare">LINEやメールで送る</button>
+    </div>
+  </div>
+
+  <div class="setrow">
+    <h3>控えから戻す</h3>
+    <p>書き出したファイルを選びます。<b>入れ替える</b>と今の中身は消えます。<b>足す</b>なら今のものを残したまま追加します。</p>
+    <div class="row">
+      <button type="button" id="impReplace">入れ替える</button>
+      <button type="button" id="impMerge">今のものに足す</button>
+    </div>
+    <input type="file" id="impFile" hidden>
+  </div>
+
+  <div class="setrow">
+    <h3>見本を入れて試す</h3>
+    <p>36曲の見本が入ります。<b>今の中身は消えます。</b>まだ何も登録していないときの練習用です。</p>
+    <div class="row"><button type="button" id="sample">見本を入れる</button></div>
+  </div>
+
+  <div class="setrow">
+    <h3>ぜんぶ消す</h3>
+    <p>登録した曲をすべて消します。<b>元には戻せません。</b>先に控えを書き出しておいてください。</p>
+    <div class="row"><button type="button" class="danger" id="clearAll">ぜんぶ消す</button></div>
+  </div>
+
+  <div class="ver" id="ver">マイカラ</div>
+</div>
+
+<!-- 消すときなどに聞く。端末によっては confirm() が出ないので自前で持つ -->
+<div class="ask" id="ask" hidden role="alertdialog" aria-modal="true" aria-labelledby="askMsg">
+  <div class="askbox">
+    <p id="askMsg"></p>
+    <div class="askbar">
+      <button type="button" id="askNo">やめる</button>
+      <button type="button" id="askOk" class="go">はい</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="js/kana.js"></script>
+<script src="js/store.js"></script>
+<script src="js/main.js"></script>
+<!-- iPhone で使うときの手当て。iPhone 以外では何も起きない（中で見分けている） -->
+<script src="js/ios.js"></script>
+</body>
+</html>

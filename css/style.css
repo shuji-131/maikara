@@ -1,0 +1,452 @@
+/* ══════════════════════════════════════════════════
+   マイカラ — 見た目
+   テーマは「きせかえ」で差し替える。色は必ずトークン（--名前）を通す。
+   ★webフォントは使わない。APKに通信の許可が無く、読みに行っても黙って
+     落ちるだけだから。端末のゴシック体をそのまま使う。
+   ══════════════════════════════════════════════════ */
+
+/* ══ 歌本テーマ（明）＝白黒の印刷物 ══ */
+:root{
+  --hh:118px;
+  --bg:#C9C6BD;          /* 机の上 */
+  --paper:#FBFAF6;       /* 紙 */
+  --band:#E7E5DE;        /* 5行ごとの網かけ */
+  --bar:#16150F;         /* 見出しの黒帯 */
+  --barInk:#FBFAF6;
+  --ink:#16150F;
+  --ink2:#4E4C45;
+  --ink3:#908D84;
+  --rule:#CBC8C0;
+  --edge:#B9B6AC;
+  --chip:#E7E5DE;
+  --chipOn:#16150F;
+  --chipOnInk:#FBFAF6;
+  --accent:#16150F;
+  --mark:#16150F;        /* 爪の小さい四角 */
+  --sheet:#FBFAF6;
+  --danger:#A32B1C;
+  --shadow:0 14px 40px rgba(30,26,16,.34);
+  --ui: system-ui, -apple-system, "Hiragino Sans", "Noto Sans JP",
+        "Yu Gothic UI", "Yu Gothic", Meiryo, sans-serif;
+  --titleSp:-.012em;
+  --titleW:500;
+  --pageShadow: 0 1px 0 var(--edge), 0 0 0 1px var(--edge);
+}
+/* ══ 歌本テーマ（暗）＝カラオケボックスの明かり ══ */
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0A0A0B; --paper:#141416; --band:#1C1C1F; --bar:#000000; --barInk:#EDEBE3;
+    --ink:#EDEBE3; --ink2:#A6A39A; --ink3:#6E6B64; --rule:#2A2A2E; --edge:#2E2E33;
+    --chip:#1F1F23; --chipOn:#EDEBE3; --chipOnInk:#141416; --accent:#EDEBE3; --mark:#EDEBE3;
+    --sheet:#17171A; --danger:#E4715F; --shadow:0 14px 40px rgba(0,0,0,.7);
+    --pageShadow: 0 0 0 1px var(--edge);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0A0A0B; --paper:#141416; --band:#1C1C1F; --bar:#000000; --barInk:#EDEBE3;
+  --ink:#EDEBE3; --ink2:#A6A39A; --ink3:#6E6B64; --rule:#2A2A2E; --edge:#2E2E33;
+  --chip:#1F1F23; --chipOn:#EDEBE3; --chipOnInk:#141416; --accent:#EDEBE3; --mark:#EDEBE3;
+  --sheet:#17171A; --danger:#E4715F; --shadow:0 14px 40px rgba(0,0,0,.7);
+  --pageShadow: 0 0 0 1px var(--edge);
+}
+/* ══ ネオンテーマ（夜の画面専用・きせかえの2枚目） ══ */
+:root[data-skin="neon"]{
+  --bg:#07050C; --paper:#110B1A; --band:#180F25; --bar:#FF3D9A; --barInk:#07050C;
+  --ink:#F3EBFF; --ink2:#AE95D4; --ink3:#7A62A0; --rule:#2B1A42; --edge:#3A2560;
+  --chip:#1D1330; --chipOn:#FF3D9A; --chipOnInk:#07050C; --accent:#FF3D9A; --mark:#34E0E8;
+  --sheet:#150E22; --danger:#FF6B6B; --shadow:0 0 44px rgba(255,61,154,.3);
+  --titleSp:.03em; --titleW:700;
+  --pageShadow: 0 0 0 1px var(--edge);
+}
+
+*{box-sizing:border-box}
+html,body{margin:0; padding:0}
+html{background:var(--bg)}
+body{
+  background:var(--bg); color:var(--ink);
+  font-family:var(--ui); font-size:14px; line-height:1.55;
+  -webkit-text-size-adjust:100%;
+  padding-top:env(safe-area-inset-top,0px);
+  -webkit-tap-highlight-color:transparent;
+}
+button,input,select,textarea{font:inherit; color:inherit}
+button{cursor:pointer}
+[hidden]{display:none !important}
+:focus-visible{outline:2px solid var(--accent); outline-offset:1px}
+img{max-width:100%}
+
+/* ══ 上部の操作 ══ */
+#top{
+  position:sticky; top:env(safe-area-inset-top,0px); z-index:40;
+  background:var(--bg); border-bottom:1px solid var(--edge); padding:8px 14px;
+}
+.top-row{display:flex; align-items:center; gap:8px; flex-wrap:wrap}
+.brand{font-weight:700; font-size:17px; margin:0; letter-spacing:.06em; white-space:nowrap}
+:root[data-skin="neon"] .brand{text-shadow:0 0 14px rgba(255,61,154,.6); color:var(--accent)}
+.spacer{flex:1 1 auto; min-width:0}
+.segwrap{display:flex; align-items:center; gap:5px}
+.seg-label{font-size:9.5px; letter-spacing:.12em; color:var(--ink3)}
+.seg{display:flex; background:var(--chip); border-radius:5px; padding:2px}
+.seg[aria-disabled="true"]{opacity:.38; pointer-events:none}
+.seg button{
+  border:0; background:transparent; color:var(--ink2);
+  font-size:11.5px; font-weight:500; padding:4px 9px; border-radius:3px; white-space:nowrap;
+}
+.seg button[aria-pressed="true"]{background:var(--chipOn); color:var(--chipOnInk); font-weight:700}
+.iconbtn{
+  border:1px solid var(--edge); background:var(--paper); color:var(--ink2);
+  border-radius:5px; width:30px; height:28px; font-size:14px; line-height:1; padding:0;
+}
+
+.tools{display:flex; gap:7px; margin-top:8px; flex-wrap:wrap}
+.search{
+  flex:1 1 170px; min-width:0; display:flex; align-items:center; gap:6px;
+  background:var(--paper); border:1px solid var(--edge); border-radius:5px; padding:0 9px;
+}
+.search input{flex:1; min-width:0; border:0; background:transparent; padding:7px 0; font-size:13.5px}
+.search input:focus{outline:none}
+.search svg{flex:none; opacity:.45}
+.search button{border:0; background:transparent; color:var(--ink3); padding:3px; font-size:12px}
+select.sort,.filterbtn{
+  background:var(--paper); border:1px solid var(--edge); color:var(--ink);
+  border-radius:5px; padding:7px 9px; font-size:12.5px;
+}
+.filterbtn{display:flex; align-items:center; gap:6px}
+.filterbtn .count{
+  background:var(--chipOn); color:var(--chipOnInk); border-radius:99px; font-size:10px;
+  min-width:16px; height:16px; display:grid; place-items:center; padding:0 5px; font-weight:700;
+}
+#filters{margin-top:8px; padding:9px 10px; background:var(--paper); border:1px solid var(--edge); border-radius:5px}
+.frow{display:flex; gap:8px; align-items:flex-start; padding:3px 0}
+.frow + .frow{border-top:1px dashed var(--rule); margin-top:4px; padding-top:8px}
+.fname{flex:none; width:38px; font-size:10px; letter-spacing:.08em; color:var(--ink3); padding-top:4px}
+.chips{display:flex; flex-wrap:wrap; gap:5px; flex:1}
+.chip{
+  border:1px solid var(--edge); background:transparent; color:var(--ink2);
+  border-radius:3px; font-size:11.5px; padding:2px 9px;
+}
+.chip[aria-pressed="true"]{background:var(--chipOn); color:var(--chipOnInk); border-color:var(--chipOn); font-weight:700}
+.fhint{font-size:10.5px; color:var(--ink3); margin:7px 0 0; line-height:1.5}
+
+.notice{
+  margin:10px 14px 0; padding:7px 10px; background:var(--paper);
+  border:1px solid var(--edge); border-left:4px solid var(--mark);
+  display:flex; gap:9px; align-items:center; font-size:11.5px; color:var(--ink2);
+}
+.notice b{color:var(--ink)}
+.notice button{
+  margin-left:auto; flex:none; border:1px solid var(--edge); background:transparent;
+  color:var(--ink); border-radius:3px; padding:3px 9px; font-size:11px; white-space:nowrap;
+}
+
+/* ══ 本 ══ */
+.wrap{padding:10px 14px 30px; max-width:1040px; margin:0 auto}
+.book{display:grid; grid-template-columns:minmax(0,1fr) 30px; gap:0}
+
+.sheetpaper{background:var(--paper); box-shadow:var(--pageShadow); padding:4px 0 0}
+.runhead{
+  display:flex; justify-content:space-between; align-items:baseline;
+  padding:5px 12px 4px; border-bottom:1px solid var(--ink);
+  font-size:10px; letter-spacing:.2em; color:var(--ink2);
+}
+.runhead b{font-size:11px; letter-spacing:.3em; color:var(--ink)}
+.runfoot{
+  display:flex; justify-content:space-between; align-items:baseline;
+  padding:5px 12px 7px; border-top:1px solid var(--ink);
+  font-size:10px; letter-spacing:.18em; color:var(--ink3);
+  font-variant-numeric:tabular-nums;
+}
+
+.page{columns:2; column-gap:30px; column-rule:1px solid var(--rule); padding:5px 12px 6px}
+@media (max-width:760px){ .page{columns:1} }
+
+.gyo{
+  break-after:avoid; break-inside:avoid;
+  background:var(--bar); color:var(--barInk);
+  padding:2px 8px; margin:7px 0 0;
+  font-size:11px; font-weight:700; letter-spacing:.34em;
+  display:flex; justify-content:space-between; align-items:baseline; gap:8px;
+  scroll-margin-top:calc(env(safe-area-inset-top,0px) + var(--hh) + 20px);
+}
+.gyo span{letter-spacing:.06em; font-weight:500; font-size:9.5px; opacity:.8; flex:none}
+.page > .gyo:first-child{margin-top:0}
+/* 歌手名の黒帯（歌手名順のとき） */
+.gyo.name{letter-spacing:.02em; padding:3px 8px}
+.gyo .glabel{
+  letter-spacing:.02em; font-size:12px; font-weight:700; opacity:1;
+  min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; flex:1;
+}
+.gyo .glabel em{font-style:normal; font-size:8.5px; font-weight:400; letter-spacing:.14em; opacity:.6; margin-left:6px}
+:root:not([data-skin="neon"]) .gyo{box-shadow:0 0 0 1px var(--bar)}
+
+.song{
+  break-inside:avoid; width:100%; text-align:left; background:transparent;
+  border:0; border-bottom:1px solid var(--rule);
+  padding:2px 6px 3px; color:inherit;
+  display:grid; align-items:center; gap:0 7px;
+  grid-template-columns:minmax(0,1fr) minmax(0,86px);
+  grid-template-rows:auto auto;
+}
+.page[data-mode="detail"] .song{grid-template-columns:minmax(0,1fr) 30px minmax(0,82px)}
+/* 歌手名順は歌手名が黒帯に出るので、右の欄には歌い出しを入れる */
+.page[data-by="artist"] .song{grid-template-columns:minmax(0,1fr) minmax(0,1.05fr)}
+.page[data-by="artist"][data-mode="detail"] .song{grid-template-columns:minmax(0,1fr) 30px minmax(0,.95fr)}
+.page[data-by="artist"] .a{
+  text-align:left; font-size:11px; font-weight:700; color:var(--ink2);
+  padding-left:5px; border-left:1px solid var(--rule);
+}
+.page[data-by="artist"] .a::before{content:"\266A\3000"; font-weight:400; opacity:.5}
+.page[data-by="artist"] .a:empty::before{content:""}
+
+.song.band{background:var(--band)}
+.song:hover{background:var(--chipOn); color:var(--chipOnInk)}
+.song:hover .ruby,.song:hover .a,.song:hover .no,.song:hover .meta,.song:hover .hum{color:inherit; opacity:.85}
+
+.ruby{
+  grid-area:1/1/2/2; font-size:9px; line-height:1.25; color:var(--ink3);
+  letter-spacing:.14em; white-space:nowrap; overflow:hidden;
+}
+.t{
+  grid-area:2/1/3/2; font-weight:var(--titleW); font-size:13.5px;
+  line-height:1.3; letter-spacing:var(--titleSp);
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.no{
+  grid-area:1/2/3/3; font-size:11px; font-weight:700; text-align:right;
+  font-variant-numeric:tabular-nums; color:var(--ink2);
+}
+.page[data-mode="simple"] .a{grid-area:1/2/3/3}
+.page[data-mode="detail"] .a{grid-area:1/3/3/4}
+.a{
+  font-size:10.5px; color:var(--ink2); text-align:right;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.meta{
+  grid-column:1/-1; display:flex; flex-wrap:wrap; gap:0 7px; align-items:baseline;
+  font-size:9.5px; color:var(--ink3); margin-top:1px;
+}
+.meta i{font-style:normal; border:1px solid var(--rule); padding:0 4px}
+.hum{grid-column:1/-1; font-size:10px; font-weight:700; color:var(--ink2); margin-top:1px}
+.hum::before{content:"\266A "; font-weight:400; opacity:.55}
+
+.empty{padding:34px 16px; text-align:center; color:var(--ink3); font-size:12.5px; column-span:all}
+.empty b{display:block; font-size:15px; color:var(--ink2); margin-bottom:6px; font-weight:700}
+.empty .mini{
+  margin-top:14px; border:1px solid var(--edge); background:transparent; color:var(--ink);
+  border-radius:4px; padding:7px 15px; font-size:12px;
+}
+
+.addbar{display:flex; justify-content:center; gap:9px; margin-top:14px; flex-wrap:wrap}
+.addbtn{
+  background:var(--chipOn); color:var(--chipOnInk); border:0; border-radius:4px;
+  padding:10px 24px; font-size:13.5px; font-weight:700; letter-spacing:.04em;
+}
+
+/* ══ 下からのシート ══ */
+.scrim{position:fixed; inset:0; background:rgba(10,8,4,.55); z-index:50; opacity:0; transition:opacity .18s ease}
+.scrim.on{opacity:1}
+.sheet{
+  position:fixed; left:0; right:0; bottom:0; z-index:51;
+  background:var(--sheet); border-top:1px solid var(--ink);
+  box-shadow:var(--shadow); max-height:90vh; overflow-y:auto;
+  padding:0 16px calc(20px + env(safe-area-inset-bottom,0px));
+  transform:translateY(102%); transition:transform .22s cubic-bezier(.2,.8,.3,1);
+}
+.sheet.on{transform:translateY(0)}
+@media (min-width:720px){
+  .sheet{left:50%; right:auto; transform:translate(-50%,102%); width:620px}
+  .sheet.on{transform:translate(-50%,0)}
+}
+@media (prefers-reduced-motion:reduce){ .sheet,.scrim{transition:none} }
+.grip{width:34px; height:3px; background:var(--edge); margin:9px auto 4px}
+.sheet-head{
+  position:sticky; top:0; background:var(--sheet); padding:2px 0 9px;
+  border-bottom:2px solid var(--ink); margin-bottom:14px;
+}
+.sheet .ruby-big{font-size:10px; letter-spacing:.28em; color:var(--ink3)}
+.sheet h2{font-size:20px; font-weight:700; margin:1px 0 0; line-height:1.3; letter-spacing:var(--titleSp); padding-right:34px}
+.sheet .sub{font-size:11.5px; color:var(--ink2); margin-top:3px}
+.closebtn{
+  position:absolute; right:0; top:2px; border:1px solid var(--edge); background:transparent;
+  color:var(--ink2); border-radius:3px; width:28px; height:28px; font-size:13px; line-height:1;
+}
+.dl{display:grid; grid-template-columns:66px minmax(0,1fr); gap:9px 12px; align-items:start}
+.dl dt{font-size:10px; letter-spacing:.1em; color:var(--ink3); padding-top:3px}
+.dl dd{margin:0; font-size:13.5px; overflow-wrap:anywhere}
+.quote{background:var(--band); border-left:3px solid var(--mark); padding:7px 10px; font-size:13.5px; font-weight:700}
+.big-key{display:inline-flex; align-items:baseline; gap:5px; font-variant-numeric:tabular-nums; font-size:21px; font-weight:700}
+.big-key span{font-size:10.5px; font-weight:400; color:var(--ink3)}
+.dtags{display:flex; flex-wrap:wrap; gap:5px}
+.dtag{font-size:10.5px; border:1px solid var(--edge); padding:1px 8px; color:var(--ink2)}
+.sheetbar{display:flex; gap:8px; margin-top:18px}
+.sheetbar button{flex:1; border-radius:4px; padding:10px; font-size:13px; font-weight:700; border:1px solid var(--edge); background:transparent; color:var(--ink)}
+.sheetbar .del{color:var(--danger); border-color:var(--danger)}
+
+/* ══ 登録フォーム ══ */
+.field{margin-bottom:14px}
+.field > label,.flabel{display:block; font-size:10px; letter-spacing:.1em; color:var(--ink3); margin-bottom:4px}
+.inp{width:100%; background:var(--paper); border:1px solid var(--edge); border-radius:4px; padding:9px 10px; font-size:16px}
+.inp:focus{outline:none; border-color:var(--ink)}
+textarea.inp{resize:vertical; min-height:58px; line-height:1.55}
+.pair{display:flex; gap:7px; align-items:flex-end}
+.pair .grow{flex:1; min-width:0}
+.yomibox{flex:none; width:104px; position:relative}
+.yomibox .inp{text-align:center; letter-spacing:.22em; padding-left:4px; padding-right:4px}
+.auto-badge{
+  position:absolute; right:2px; top:-16px; font-size:9px; letter-spacing:.06em;
+  background:var(--chipOn); color:var(--chipOnInk); padding:1px 6px; font-weight:700;
+}
+.newtag{display:flex; gap:6px; margin-top:7px}
+.newtag .inp{padding:6px 9px; font-size:14px}
+.newtag button{flex:none; border:1px dashed var(--ink3); background:transparent; color:var(--ink2); border-radius:4px; padding:0 12px; font-size:12.5px}
+.stepper{display:flex; align-items:center; gap:11px}
+.stepper button{width:38px; height:38px; border-radius:4px; border:1px solid var(--edge); background:var(--paper); color:var(--ink); font-size:16px; font-weight:700}
+.stepper output{font-size:21px; font-weight:700; min-width:46px; text-align:center; font-variant-numeric:tabular-nums}
+.stepper em{font-style:normal; font-size:10.5px; color:var(--ink3)}
+.savebar{display:flex; gap:8px; margin-top:18px}
+.savebar button{flex:1; border-radius:4px; padding:12px; font-size:14px; font-weight:700; border:1px solid var(--edge)}
+.savebar .primary{background:var(--chipOn); color:var(--chipOnInk); border-color:var(--chipOn)}
+.savebar .ghost{background:transparent; color:var(--ink2)}
+
+/* ══ 設定（控え・見本・版） ══ */
+.setrow{padding:12px 0; border-bottom:1px dashed var(--rule)}
+.setrow:last-of-type{border-bottom:0}
+.setrow h3{font-size:13px; margin:0 0 3px; font-weight:700}
+.setrow p{font-size:11.5px; color:var(--ink3); margin:0 0 9px; line-height:1.6}
+.setrow .row{display:flex; gap:8px; flex-wrap:wrap}
+.setrow button{
+  border:1px solid var(--edge); background:var(--paper); color:var(--ink);
+  border-radius:4px; padding:9px 15px; font-size:12.5px;
+}
+.setrow button.danger{color:var(--danger); border-color:var(--danger)}
+.ver{font-size:10.5px; color:var(--ink3); text-align:center; padding:14px 0 2px; letter-spacing:.1em}
+
+/* 右端の爪 */
+.tabs{
+  position:sticky; top:calc(env(safe-area-inset-top,0px) + var(--hh) + 10px);
+  display:flex; flex-direction:column; gap:2px; padding-left:3px;
+}
+.tab{
+  border:1px solid var(--ink3); background:var(--paper); color:var(--ink2);
+  border-left:0; border-radius:0 3px 3px 0;
+  padding:4px 0 4px 3px; font-size:11.5px; font-weight:500; line-height:1.15;
+  display:flex; align-items:center; gap:3px;
+}
+.tab::before{content:""; width:4px; height:4px; background:var(--mark); flex:none}
+.tab small{font-size:8.5px; color:var(--ink3); letter-spacing:0}
+.tab[aria-current="true"]{background:var(--ink); color:var(--paper); border-color:var(--ink); font-weight:700}
+.tab[aria-current="true"]::before{background:var(--paper)}
+.tab[aria-current="true"] small{color:var(--paper); opacity:.7}
+:root[data-skin="neon"] .tab[aria-current="true"]{background:var(--accent); color:#07050C; border-color:var(--accent); box-shadow:0 0 14px -2px var(--accent)}
+.tab:disabled{opacity:.25; cursor:default}
+
+/* ══ 聞く箱 ══ */
+.ask{
+  position:fixed; inset:0; z-index:60; display:grid; place-items:center;
+  background:rgba(10,8,4,.6); padding:20px;
+  opacity:0; transition:opacity .16s ease;
+}
+.ask.on{opacity:1}
+@media (prefers-reduced-motion:reduce){ .ask{transition:none} }
+.askbox{
+  background:var(--sheet); border:1px solid var(--ink); box-shadow:var(--shadow);
+  border-radius:5px; padding:18px 16px 14px; max-width:min(92vw,380px);
+}
+.askbox p{margin:0 0 16px; font-size:13.5px; line-height:1.7}
+.askbar{display:flex; gap:8px}
+.askbar button{
+  flex:1; border:1px solid var(--edge); background:transparent; color:var(--ink2);
+  border-radius:4px; padding:10px; font-size:13px; font-weight:700;
+}
+.askbar .go{background:var(--danger); border-color:var(--danger); color:#fff}
+
+.toast{
+  position:fixed; left:50%; bottom:20px; transform:translate(-50%,14px); z-index:70;
+  background:var(--ink); color:var(--paper); border-radius:4px; padding:9px 16px;
+  font-size:12px; box-shadow:var(--shadow); opacity:0; pointer-events:none;
+  transition:opacity .18s ease, transform .18s ease; max-width:min(90vw,420px); text-align:center;
+}
+.toast.on{opacity:1; transform:translate(-50%,0)}
+
+@media (max-width:640px){
+  .brand{font-size:15px}
+  .dl{grid-template-columns:60px minmax(0,1fr)}
+  .book{grid-template-columns:minmax(0,1fr) 26px}
+  .tab{font-size:10.5px; padding:3px 0 3px 2px}
+}
+
+/* ══════════════════════════════════════════════════
+   iPhone で使うときの手当て（js/ios.js が出すもの）
+   ★iPhone 以外では 1px も描かれない。要素そのものが作られないため。
+   ══════════════════════════════════════════════════ */
+
+/* 外側の入れ物に包まれて配られた時、余白が二重になるのを止める。
+   素のまま配られている時は何も変わらない */
+:root{ padding-top:0; padding-bottom:0; color-scheme:light dark; }
+
+/* ── 下に出る案内の帯 ── */
+.iosbar{
+  position:fixed; left:10px; right:10px; z-index:120;
+  bottom:calc(10px + env(safe-area-inset-bottom,0px));
+  background:var(--paper); color:var(--ink);
+  border:1px solid var(--edge); border-radius:4px;
+  box-shadow:var(--shadow);
+  padding:13px 14px 12px;
+  transform:translateY(calc(100% + 24px)); opacity:0;
+  transition:transform .22s ease, opacity .22s ease;
+}
+.iosbar.on{ transform:translateY(0); opacity:1; }
+.iosbar-t{ font-size:14px; font-weight:700; letter-spacing:var(--titleSp); }
+.iosbar-b{ font-size:12.5px; line-height:2.0; margin-top:8px; color:var(--ink); }
+.iosbar-w{ font-size:11.5px; line-height:1.7; margin-top:9px; color:var(--ink2); }
+.iosbar-f{ display:flex; gap:8px; margin-top:12px; }
+.iosbar-f button{
+  flex:1; border-radius:4px; padding:10px; font-size:13px; font-weight:700;
+  border:1px solid var(--edge); background:transparent; color:var(--ink);
+}
+.iosbar-f button.go{ background:var(--bar); border-color:var(--bar); color:var(--barInk); }
+
+/* 手順の丸数字と、共有ボタンの絵 */
+.iosnum{
+  display:inline-grid; place-items:center; width:17px; height:17px; margin-right:7px;
+  border-radius:50%; background:var(--bar); color:var(--barInk);
+  font-size:10.5px; font-weight:700; vertical-align:1px;
+}
+.iosshare{
+  width:15px; height:15px; vertical-align:-3px; margin:0 1px;
+  fill:none; stroke:currentColor; stroke-width:1.7;
+  stroke-linecap:round; stroke-linejoin:round;
+}
+
+/* ── 自前の覆い（入れ方の案内・文字の控え） ── */
+.iosover{
+  position:fixed; inset:0; z-index:130; display:grid; place-items:center;
+  padding:16px; background:rgba(10,9,6,.5);
+  opacity:0; transition:opacity .2s ease;
+}
+.iosover.on{ opacity:1; }
+.iosbox{
+  width:min(520px,100%); max-height:86vh; overflow:auto;
+  background:var(--sheet); color:var(--ink);
+  border:1px solid var(--edge); border-radius:4px;
+  box-shadow:var(--shadow); padding:16px 16px 14px;
+}
+.iosbox h2{
+  font-size:16px; font-weight:700; margin:0 0 10px;
+  letter-spacing:var(--titleSp);
+  border-bottom:1px solid var(--rule); padding-bottom:9px;
+}
+.iosbody p{ font-size:12.5px; line-height:2.0; margin:0 0 10px; }
+.iosbody p.dim{ font-size:11.5px; line-height:1.7; color:var(--ink2); }
+.iostext{
+  width:100%; box-sizing:border-box; resize:vertical;
+  font:11.5px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  background:var(--paper); color:var(--ink2);
+  border:1px solid var(--edge); border-radius:4px; padding:9px;
+}
+.iosfoot{ display:flex; gap:8px; margin-top:12px; }
+.iosfoot button{
+  flex:1; border-radius:4px; padding:10px; font-size:13px; font-weight:700;
+  border:1px solid var(--edge); background:transparent; color:var(--ink);
+}
+.iosfoot button.go{ background:var(--bar); border-color:var(--bar); color:var(--barInk); }
